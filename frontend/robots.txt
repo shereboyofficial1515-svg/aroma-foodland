@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /account.html
+Disallow: /checkout.html
+Disallow: /cart.html
+Disallow: /order-confirmation.html
+Disallow: /order-details.html
+Disallow: /orders.html
+Disallow: /notifications.html
+Disallow: /reset-password.html
+Disallow: /auth-callback.html
+Disallow: /verify-callback.html
+
+Sitemap: https://aromafoodland.com/sitemap.xml

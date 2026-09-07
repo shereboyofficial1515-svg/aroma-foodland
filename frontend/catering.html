@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catering & Events — Aroma FoodLand</title>
+  <meta name="description" content="Book catering for weddings, birthdays, corporate events and more with Aroma FoodLand, Sapele." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+  <div id="app-header"></div>
+  <main id="main">
+    <section class="section">
+      <div class="container" style="max-width:640px;">
+        <div class="section-head text-center" style="margin:0 auto var(--space-6);">
+          <h1>Catering &amp; Events</h1>
+          <p class="lede" style="margin:8px auto;">Weddings, birthdays, corporate functions, private parties, indoor or outdoor catering — tell us what you need.</p>
+        </div>
+
+        <form id="catering-form" novalidate>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="event_type">Event type</label>
+              <select id="event_type" required>
+                <option value="wedding">Wedding</option>
+                <option value="birthday">Birthday</option>
+                <option value="corporate">Corporate</option>
+                <option value="meeting">Meeting</option>
+                <option value="private_party">Private party</option>
+                <option value="indoor_catering">Indoor catering</option>
+                <option value="outdoor_catering">Outdoor catering</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="event_date">Event date</label>
+              <input type="date" id="event_date" required />
+            </div>
+          </div>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="guests">Number of guests</label>
+              <input type="number" id="guests" min="1" required />
+            </div>
+            <div class="field">
+              <label for="budget">Estimated budget (optional, ₦)</label>
+              <input type="number" id="budget" min="0" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="location">Event location</label>
+            <input type="text" id="location" required placeholder="Venue name and address" />
+          </div>
+          <div class="field">
+            <label for="services_required">Services needed (comma-separated, optional)</label>
+            <input type="text" id="services_required" placeholder="e.g. Catering, decoration, drinks" />
+          </div>
+          <div class="field">
+            <label for="additional_info">Additional information (optional)</label>
+            <textarea id="additional_info" maxlength="1000"></textarea>
+          </div>
+
+          <hr class="rule" />
+          <div class="field">
+            <label for="customer_name">Full name</label>
+            <input type="text" id="customer_name" required />
+          </div>
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="customer_phone">Phone number</label>
+              <input type="tel" id="customer_phone" required />
+            </div>
+            <div class="field">
+              <label for="customer_email">Email</label>
+              <input type="email" id="customer_email" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="catering-submit">Submit Request</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--surface-alt);">
+      <div class="container" style="max-width:640px;">
+        <h2>My Requests</h2>
+        <div id="my-catering" style="margin-top:var(--space-5);"></div>
+      </div>
+    </section>
+  </main>
+  <div id="app-footer"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/pages/catering.js"></script>
+</body>
+</html>

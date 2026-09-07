@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account — Aroma FoodLand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <style>
+    .account-shell { display: grid; grid-template-columns: 220px 1fr; gap: var(--space-8); align-items: flex-start; }
+    .account-nav { display: flex; flex-direction: column; gap: 4px; position: sticky; top: calc(var(--header-height) + 16px); }
+    .account-nav button { text-align: left; padding: 0.65rem 1rem; border-radius: var(--radius-sm); background: none; border: none; font-size: var(--fs-sm); font-weight: 500; color: var(--text-secondary); }
+    .account-nav button.is-active { background: var(--primary-tint); color: var(--primary-color); font-weight: 600; }
+    .account-panel { display: none; }
+    .account-panel.is-active { display: block; }
+    .quick-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-bottom: var(--space-8); }
+    .quick-links a { text-align: center; padding: var(--space-4); border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--surface-color); font-size: var(--fs-sm); font-weight: 600; }
+    @media (max-width: 760px) { .account-shell { grid-template-columns: 1fr; } .account-nav { flex-direction: row; overflow-x: auto; position: static; } .quick-links { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div id="app-header"></div>
+  <main id="main">
+    <section class="section">
+      <div class="container">
+        <h1>My Account</h1>
+        <div class="quick-links" style="margin-top:var(--space-6);">
+          <a href="orders.html"><i data-icon="orders" data-size="20"></i><div style="margin-top:6px;">My Orders</div></a>
+          <a href="reservations.html"><i data-icon="calendar" data-size="20"></i><div style="margin-top:6px;">Reservations</div></a>
+          <a href="notifications.html"><i data-icon="bell" data-size="20"></i><div style="margin-top:6px;">Notifications</div></a>
+          <a href="reviews.html"><i data-icon="star" data-size="20"></i><div style="margin-top:6px;">My Reviews</div></a>
+        </div>
+
+        <div class="account-shell">
+          <nav class="account-nav" aria-label="Account sections">
+            <button data-tab="profile" class="is-active">Profile</button>
+            <button data-tab="addresses">Saved Addresses</button>
+            <button data-tab="security">Security</button>
+            <button data-tab="preferences">Notification Preferences</button>
+          </nav>
+
+          <div>
+            <div class="account-panel is-active" data-panel="profile">
+              <h3>Profile</h3>
+              <form id="profile-form" style="max-width:420px; margin-top:var(--space-4);">
+                <div class="field"><label for="full_name">Full name</label><input type="text" id="full_name" required /></div>
+                <div class="field"><label for="phone">Phone number</label><input type="tel" id="phone" required /></div>
+                <button type="submit" class="btn btn-primary" id="profile-submit">Save Changes</button>
+              </form>
+            </div>
+
+            <div class="account-panel" data-panel="addresses">
+              <h3>Saved Addresses</h3>
+              <div id="addresses-list" style="margin:var(--space-4) 0;"></div>
+              <form id="address-form" style="max-width:420px;">
+                <div class="field"><label for="addr_label">Label</label><input type="text" id="addr_label" placeholder="Home, Office…" /></div>
+                <div class="field"><label for="addr_street">Street address</label><input type="text" id="addr_street" required /></div>
+                <div class="grid grid-2">
+                  <div class="field"><label for="addr_city">City</label><input type="text" id="addr_city" required /></div>
+                  <div class="field"><label for="addr_state">State</label><input type="text" id="addr_state" value="Delta State" /></div>
+                </div>
+                <div class="field"><label for="addr_landmark">Landmark (optional)</label><input type="text" id="addr_landmark" /></div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);margin-bottom:var(--space-4);"><input type="checkbox" id="addr_default" style="width:auto;" /> Set as default</label>
+                <button type="submit" class="btn btn-outline" id="address-submit">Add Address</button>
+              </form>
+            </div>
+
+            <div class="account-panel" data-panel="security">
+              <h3>Change Password</h3>
+              <form id="password-form" style="max-width:420px; margin-top:var(--space-4);">
+                <div class="field"><label for="current_password">Current password</label><input type="password" id="current_password" required /></div>
+                <div class="field"><label for="new_password">New password</label><input type="password" id="new_password" required /><span class="hint">At least 8 characters, with uppercase, lowercase and a number.</span></div>
+                <button type="submit" class="btn btn-primary" id="password-submit">Update Password</button>
+              </form>
+            </div>
+
+            <div class="account-panel" data-panel="preferences">
+              <h3>Notification Preferences</h3>
+              <form id="prefs-form" style="max-width:420px; margin-top:var(--space-4);">
+                <label style="display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);margin-bottom:var(--space-3);"><input type="checkbox" id="pref_email" style="width:auto;" /> Email notifications</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);margin-bottom:var(--space-3);"><input type="checkbox" id="pref_push" style="width:auto;" /> Push notifications</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:var(--fs-sm);margin-bottom:var(--space-5);"><input type="checkbox" id="pref_promotions" style="width:auto;" /> Promotional announcements</label>
+                <button type="submit" class="btn btn-primary" id="prefs-submit">Save Preferences</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-outline" id="logout-btn" style="margin-top:var(--space-10);"><i data-icon="logout" data-size="16"></i> Sign Out</button>
+      </div>
+    </section>
+  </main>
+  <div id="app-footer"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/pages/account.js"></script>
+</body>
+</html>

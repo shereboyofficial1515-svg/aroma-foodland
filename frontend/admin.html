@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin Dashboard — Aroma FoodLand</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+  <div id="admin-app" hidden>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <div class="brand"><span class="brand-mark">AF</span> Admin</div>
+        <nav class="admin-nav" id="admin-nav">
+          <button data-section="dashboard" class="is-active"><i data-icon="dashboard" data-size="18"></i> Dashboard</button>
+          <button data-section="orders"><i data-icon="orders" data-size="18"></i> Orders</button>
+          <button data-section="meals"><i data-icon="utensils" data-size="18"></i> Meals</button>
+          <button data-section="categories"><i data-icon="menu" data-size="18"></i> Categories</button>
+          <button data-section="customers"><i data-icon="user" data-size="18"></i> Customers</button>
+          <button data-section="reservations"><i data-icon="calendar" data-size="18"></i> Reservations</button>
+          <button data-section="bookings"><i data-icon="party" data-size="18"></i> Bookings</button>
+          <button data-section="reviews"><i data-icon="star" data-size="18"></i> Reviews</button>
+          <button data-section="gallery"><i data-icon="image" data-size="18"></i> Gallery</button>
+          <button data-section="promotions"><i data-icon="bell" data-size="18"></i> Promotions</button>
+          <button data-section="messages"><i data-icon="mail" data-size="18"></i> Messages</button>
+          <button data-section="ai"><i data-icon="chat" data-size="18"></i> AI Assistant</button>
+          <button data-section="settings"><i data-icon="settings" data-size="18"></i> Settings</button>
+          <button data-section="audit"><i data-icon="shield" data-size="18"></i> Audit Logs</button>
+          <hr class="rule" style="border-color:rgba(246,241,232,0.15);" />
+          <button id="admin-logout"><i data-icon="logout" data-size="18"></i> Logout</button>
+        </nav>
+      </aside>
+
+      <main class="admin-main">
+        <div class="admin-topbar">
+          <h2 id="admin-section-title">Dashboard</h2>
+          <span id="admin-user-label" class="text-muted" style="font-size:var(--fs-sm);"></span>
+        </div>
+
+        <section class="admin-section is-active" data-panel="dashboard" id="panel-dashboard"></section>
+        <section class="admin-section" data-panel="orders" id="panel-orders"></section>
+        <section class="admin-section" data-panel="meals" id="panel-meals"></section>
+        <section class="admin-section" data-panel="categories" id="panel-categories"></section>
+        <section class="admin-section" data-panel="customers" id="panel-customers"></section>
+        <section class="admin-section" data-panel="reservations" id="panel-reservations"></section>
+        <section class="admin-section" data-panel="bookings" id="panel-bookings"></section>
+        <section class="admin-section" data-panel="reviews" id="panel-reviews"></section>
+        <section class="admin-section" data-panel="gallery" id="panel-gallery"></section>
+        <section class="admin-section" data-panel="promotions" id="panel-promotions"></section>
+        <section class="admin-section" data-panel="messages" id="panel-messages"></section>
+        <section class="admin-section" data-panel="ai" id="panel-ai"></section>
+        <section class="admin-section" data-panel="settings" id="panel-settings"></section>
+        <section class="admin-section" data-panel="audit" id="panel-audit"></section>
+      </main>
+    </div>
+  </div>
+
+  <div id="admin-guard-message" class="section text-center" style="max-width:420px; margin:var(--space-10) auto;">
+    <div class="spinner" style="width:32px;height:32px;border-color:rgba(184,69,47,0.25);border-top-color:var(--primary-color);margin:0 auto var(--space-4);"></div>
+    <p>Checking access…</p>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/admin/dashboard.js"></script>
+  <script src="js/admin/meals.js"></script>
+  <script src="js/admin/categories.js"></script>
+  <script src="js/admin/orders.js"></script>
+  <script src="js/admin/customers.js"></script>
+  <script src="js/admin/reservations.js"></script>
+  <script src="js/admin/bookings.js"></script>
+  <script src="js/admin/reviews.js"></script>
+  <script src="js/admin/gallery.js"></script>
+  <script src="js/admin/promotions.js"></script>
+  <script src="js/admin/messages.js"></script>
+  <script src="js/admin/ai.js"></script>
+  <script src="js/admin/settings.js"></script>
+  <script src="js/admin/audit.js"></script>
+  <script src="js/admin/shell.js"></script>
+</body>
+</html>

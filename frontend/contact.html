@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — Aroma FoodLand</title>
+  <meta name="description" content="Get in touch with Aroma FoodLand, Sapele, Delta State. Call, message, or visit us." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+  <div id="app-header"></div>
+  <main id="main">
+    <section class="section">
+      <div class="container grid grid-2" style="align-items:flex-start;">
+        <div>
+          <h1>Get in Touch</h1>
+          <p class="lede" style="margin:12px 0 var(--space-6);">Questions about an order, reservation, or event? Send us a message and we'll respond shortly.</p>
+
+          <div class="flex gap-3" style="margin-bottom:var(--space-4);"><span style="color:var(--primary-color)"><i data-icon="mapPin"></i></span><span>74 Okpe Road, beside Foodland, Sapele, Delta State, Nigeria</span></div>
+          <div class="flex gap-3" style="margin-bottom:var(--space-4);"><span style="color:var(--primary-color)"><i data-icon="phone"></i></span><a href="tel:+2348103980362">+234 810 398 0362</a></div>
+          <div class="flex gap-3" style="margin-bottom:var(--space-4);"><span style="color:var(--primary-color)"><i data-icon="clock"></i></span><span>7:00 AM – 9:30 PM, daily</span></div>
+
+          <form id="contact-form" novalidate style="margin-top:var(--space-6);">
+            <div class="field"><label for="name">Full name</label><input type="text" id="name" required /></div>
+            <div class="grid grid-2">
+              <div class="field"><label for="email">Email</label><input type="email" id="email" required /></div>
+              <div class="field"><label for="phone">Phone (optional)</label><input type="tel" id="phone" /></div>
+            </div>
+            <div class="field"><label for="subject">Subject (optional)</label><input type="text" id="subject" /></div>
+            <div class="field"><label for="message">Message</label><textarea id="message" required maxlength="2000"></textarea></div>
+            <button type="submit" class="btn btn-primary btn-lg" id="contact-submit">Send Message</button>
+          </form>
+        </div>
+        <div class="hero-media" style="aspect-ratio:4/3;"><div class="img-placeholder" data-placeholder="restaurant-exterior"><i data-icon="mapPin" data-size="32"></i><span>Aroma FoodLand, Sapele</span></div></div>
+      </div>
+    </section>
+  </main>
+  <div id="app-footer"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/layout.js"></script>
+  <script src="js/pages/contact.js"></script>
+</body>
+</html>

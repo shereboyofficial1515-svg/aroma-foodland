@@ -1,0 +1,90 @@
+/* ============================================================================
+   AROMA FOODLAND — DESIGN TOKENS
+   Palette: warm paprika (jollof/pepper), deep palm green, turmeric gold,
+   on a warm cream ground. Inspired by the ingredients, not a generic
+   restaurant template.
+   ============================================================================ */
+
+:root {
+  /* --- Brand color --- */
+  --primary-color: #B8452F;      /* paprika / jollof red — CTAs, brand marks */
+  --primary-dark: #93341F;
+  --primary-tint: #F3DED8;
+  --secondary-color: #1F3D2B;    /* deep palm green — nav, footer, contrast text */
+  --secondary-tint: #E4EAE3;
+  --accent-color: #D69A3C;       /* turmeric gold — highlights, ratings, badges */
+  --accent-tint: #F6E7CB;
+
+  --background-color: #FBF6EF;   /* warm cream page ground */
+  --surface-color: #FFFFFF;
+  --surface-alt: #F3ECE1;        /* subtle warm panel, e.g. footer/menu dividers */
+
+  --text-primary: #221A14;       /* warm near-black, not pure black */
+  --text-secondary: #6E6154;
+  --text-muted: #9C8F80;
+  --text-on-dark: #F6F1E8;
+
+  --border-color: #E6DCCC;
+  --border-color-strong: #D3C4AC;
+
+  --success-color: #2F6B3E;
+  --warning-color: #B8752F;
+  --error-color: #B0332A;
+  --info-color: #2F6480;
+
+  /* --- Typography --- */
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.25rem;
+  --fs-3xl: 3rem;
+  --fs-4xl: 3.75rem;
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.35;
+  --lh-normal: 1.6;
+
+  /* --- Spacing scale --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-8: 3rem;
+  --space-10: 4rem;
+  --space-12: 6rem;
+
+  /* --- Shape & elevation --- */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(34, 26, 20, 0.06);
+  --shadow-md: 0 6px 20px rgba(34, 26, 20, 0.08);
+  --shadow-lg: 0 16px 40px rgba(34, 26, 20, 0.14);
+
+  --container-max: 1200px;
+  --header-height: 76px;
+
+  /* --- Motion --- */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 450ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-base: 0ms;
+    --duration-slow: 0ms;
+  }
+}
