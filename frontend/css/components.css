@@ -4,7 +4,7 @@
 
 /* --- Site header --- */
 .site-header {
-  position: sticky; top: 0; z-index: 100;
+  position: sticky; top: 0; z-index: var(--z-header);
   background: rgba(251, 246, 239, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--border-color);
@@ -34,8 +34,38 @@
 .mobile-nav-toggle { display: none; background: none; border: none; color: var(--text-primary); }
 
 @media (max-width: 860px) {
-  .main-nav { position: fixed; top: var(--header-height); right: 0; bottom: 0; left: 0; width: 100%; background: var(--surface-color); flex-direction: column; align-items: flex-start; padding: var(--space-6) var(--space-5); gap: var(--space-4); transform: translateX(100%); transition: transform var(--duration-base) var(--ease-standard); overflow-y: auto; box-sizing: border-box; }
-  .main-nav.is-open { transform: translateX(0); }
+  /* Full-screen mobile navigation drawer. It lives inside .site-header in
+     the markup (for a simple single-template render), but the header only
+     gets bumped to --z-nav-overlay WHILE the drawer is open (.nav-open
+     below) — that's what actually fixes the stacking bug: a descendant's
+     own z-index can never out-rank elements outside its ancestor's
+     stacking context, only the ancestor's z-index can. See --z-* tokens. */
+  .main-nav {
+    position: fixed; top: var(--header-height); right: 0; left: 0; width: 100%;
+    /* Explicit height rather than top+bottom: more reliable across mobile
+       browser chrome (address bar show/hide) than relying on `bottom: 0`
+       against a body that may itself be a scroll container. dvh falls back
+       cleanly to vh in engines that don't support it. */
+    height: calc(100vh - var(--header-height));
+    height: calc(100dvh - var(--header-height));
+    background: var(--surface-color);
+    flex-direction: column; align-items: flex-start;
+    padding: var(--space-6) var(--space-5); gap: var(--space-4);
+    box-sizing: border-box; overflow-y: auto;
+    visibility: hidden; opacity: 0; pointer-events: none;
+    transform: translateY(10px) scale(0.98);
+    transition: opacity var(--duration-base) var(--ease-standard),
+                transform var(--duration-base) var(--ease-standard),
+                visibility 0s linear var(--duration-base);
+  }
+  .main-nav.is-open {
+    visibility: visible; opacity: 1; pointer-events: auto;
+    transform: translateY(0) scale(1);
+    transition: opacity var(--duration-base) var(--ease-standard),
+                transform var(--duration-base) var(--ease-standard),
+                visibility 0s linear 0s;
+  }
+  .site-header.nav-open { z-index: var(--z-nav-overlay); }
   .main-nav a { font-size: var(--fs-md); }
   .mobile-nav-toggle { display: inline-flex; }
   /* Only cart (with its badge) and the hamburger stay in the top bar on
@@ -44,6 +74,11 @@
      it just doesn't all have to fit in one 40px-tall row. */
   .header-actions > [data-desktop-only] { display: none; }
 }
+
+/* Locks background scroll while the mobile nav is open, without the usual
+   layout jump: body-scroll.js measures the scrollbar width once and pads
+   it back in as padding-right for the duration of the lock. */
+body.nav-open { overflow: hidden; }
 
 @media (max-width: 420px) {
   /* Below this width even the wordmark text competes for space with the
@@ -131,15 +166,15 @@
 @media (max-width: 860px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
 
 /* --- Modal / confirmation dialog --- */
-.modal-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(34, 26, 20, 0.5); display: flex; align-items: center; justify-content: center; padding: var(--space-4); z-index: 1000; opacity: 0; pointer-events: none; transition: opacity var(--duration-base) var(--ease-standard); }
+.modal-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(34, 26, 20, 0.5); display: flex; align-items: center; justify-content: center; padding: var(--space-4); z-index: var(--z-overlay); opacity: 0; pointer-events: none; transition: opacity var(--duration-base) var(--ease-standard); }
 .modal-backdrop.is-open { opacity: 1; pointer-events: auto; }
 .modal { background: var(--surface-color); border-radius: var(--radius-lg); padding: var(--space-6); max-width: 420px; width: 100%; box-shadow: var(--shadow-lg); transform: scale(0.96); transition: transform var(--duration-base) var(--ease-standard); }
 .modal-backdrop.is-open .modal { transform: scale(1); }
 .modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
 
 /* --- AI chat widget --- */
-.ai-launcher { position: fixed; bottom: var(--space-5); right: var(--space-5); z-index: 900; width: 56px; height: 56px; border-radius: 50%; background: var(--primary-color); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); border: none; }
-.ai-panel { position: fixed; bottom: calc(var(--space-5) + 72px); right: var(--space-5); z-index: 900; width: 360px; max-width: calc(100vw - 2 * var(--space-4)); height: 480px; max-height: 70vh; background: var(--surface-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden; transform: translateY(12px) scale(0.98); opacity: 0; pointer-events: none; transition: all var(--duration-base) var(--ease-standard); }
+.ai-launcher { position: fixed; bottom: var(--space-5); right: var(--space-5); z-index: var(--z-floating); width: 56px; height: 56px; border-radius: 50%; background: var(--primary-color); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); border: none; }
+.ai-panel { position: fixed; bottom: calc(var(--space-5) + 72px); right: var(--space-5); z-index: var(--z-floating); width: 360px; max-width: calc(100vw - 2 * var(--space-4)); height: 480px; max-height: 70vh; background: var(--surface-color); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); display: flex; flex-direction: column; overflow: hidden; transform: translateY(12px) scale(0.98); opacity: 0; pointer-events: none; transition: all var(--duration-base) var(--ease-standard); }
 .ai-panel.is-open { transform: translateY(0) scale(1); opacity: 1; pointer-events: auto; }
 .ai-panel-header { background: var(--secondary-color); color: var(--text-on-dark); padding: var(--space-4); display: flex; align-items: center; justify-content: space-between; }
 .ai-messages { flex: 1; overflow-y: auto; padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }

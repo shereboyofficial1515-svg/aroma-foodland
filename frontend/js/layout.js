@@ -17,6 +17,18 @@ function currentPage() {
   return window.location.pathname.split('/').pop() || 'index.html';
 }
 
+// Locks page scroll behind the open mobile nav without the usual layout
+// jump — pads back in whatever width the vertical scrollbar was taking up.
+function lockBodyScroll() {
+  const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+  if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+  document.body.classList.add('nav-open');
+}
+function unlockBodyScroll() {
+  document.body.classList.remove('nav-open');
+  document.body.style.paddingRight = '';
+}
+
 function renderHeader() {
   const mount = document.getElementById('app-header');
   if (!mount) return;
@@ -41,17 +53,42 @@ function renderHeader() {
           <a class="icon-btn" data-desktop-only href="notifications.html" aria-label="Notifications" data-require-auth>${AromaIcons.icon('bell')}</a>
           <a class="icon-btn" href="cart.html" aria-label="Cart">${AromaIcons.icon('cart')}<span class="count-badge" data-cart-count hidden>0</span></a>
           <a class="icon-btn" data-desktop-only href="account.html" aria-label="Account" data-auth-icon>${AromaIcons.icon('user')}</a>
-          <button class="mobile-nav-toggle icon-btn" aria-label="Menu" aria-expanded="false" data-mobile-toggle>${AromaIcons.icon('menu')}</button>
+          <button class="mobile-nav-toggle icon-btn" aria-label="Menu" aria-expanded="false" aria-controls="main-nav" data-mobile-toggle>${AromaIcons.icon('menu')}</button>
         </div>
       </div>
     </header>`;
 
+  const header = mount.querySelector('.site-header');
   const toggle = mount.querySelector('[data-mobile-toggle]');
   const nav = mount.querySelector('#main-nav');
+
+  function openNav() {
+    nav.classList.add('is-open');
+    header.classList.add('nav-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.innerHTML = AromaIcons.icon('close');
+    lockBodyScroll();
+    // Move focus into the drawer so keyboard/AT users land on real content,
+    // not a menu button that visually became a close button underneath them.
+    nav.querySelector('a')?.focus();
+  }
+
+  function closeNav({ restoreFocus = false } = {}) {
+    if (!nav.classList.contains('is-open')) return;
+    nav.classList.remove('is-open');
+    header.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = AromaIcons.icon('menu');
+    unlockBodyScroll();
+    if (restoreFocus) toggle.focus();
+  }
+
   toggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(isOpen));
-    toggle.innerHTML = AromaIcons.icon(isOpen ? 'close' : 'menu');
+    nav.classList.contains('is-open') ? closeNav({ restoreFocus: true }) : openNav();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav.classList.contains('is-open')) closeNav({ restoreFocus: true });
   });
 
   mount.querySelector('[data-open="search"]').addEventListener('click', () => { window.location.href = 'search.html'; });

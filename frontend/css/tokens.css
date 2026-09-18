@@ -79,6 +79,14 @@
   --duration-fast: 150ms;
   --duration-base: 250ms;
   --duration-slow: 450ms;
+
+  /* --- Stacking order — low to high. Fixed/sticky elements should only
+     ever reference one of these, never a raw number, so the hierarchy
+     stays a single source of truth. --- */
+  --z-header: 100;
+  --z-floating: 900;   /* AI assistant launcher + panel */
+  --z-nav-overlay: 950; /* full-screen mobile navigation drawer */
+  --z-overlay: 1000;   /* modal backdrops, toasts — always win */
 }
 
 @media (prefers-reduced-motion: reduce) {
