@@ -19,15 +19,17 @@ function starRow(rating, size = 14) {
 
 function mealCardHtml(meal) {
   const hasDiscount = meal.discount_price && Number(meal.discount_price) < Number(meal.price);
-  const unavailable = meal.availability === false;
+  const outOfStock = meal.availability !== false && meal.stock === 0;
+  const unavailable = meal.availability === false || outOfStock;
   return `
     <article class="meal-card" data-meal-id="${meal.id}">
       <a href="meal-details.html?slug=${meal.slug}" class="meal-card-media" aria-label="${meal.name}">
         ${meal.primary_image_url
           ? `<img src="${meal.primary_image_url}" alt="${meal.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />`
           : `<div class="img-placeholder"><i data-icon="utensils" data-size="28"></i><span>${meal.name}</span></div>`}
+        ${meal.is_new ? `<span class="badge badge-success">New</span>` : ''}
         ${hasDiscount ? `<span class="badge badge-accent">Discount</span>` : ''}
-        ${unavailable ? `<span class="badge badge-error">Unavailable</span>` : ''}
+        ${meal.availability === false ? `<span class="badge badge-error">Unavailable</span>` : outOfStock ? `<span class="badge badge-warning">Out of stock</span>` : ''}
       </a>
       <div class="meal-card-body">
         <div class="meal-card-title">

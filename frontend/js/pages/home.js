@@ -30,22 +30,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     categoriesEl.innerHTML = categories.map((c) => `<a href="menu.html?category=${c.slug}" class="category-chip">${c.name}</a>`).join('');
   } catch { categoriesEl.innerHTML = ''; }
 
-  // --- Services (static knowledge, mirrors the AI assistant's grounding) ---
-  const SERVICE_ICONS = { restaurant: 'utensils', 'food-ordering': 'cart', 'indoor-catering': 'party', 'outdoor-catering': 'party', 'bar-lounge': 'wine', hotel: 'bed', events: 'party', meetings: 'orders', parking: 'parking', reservations: 'calendar' };
-  const SERVICES = [
-    { slug: 'restaurant', name: 'Restaurant', description: 'Dine in with a full Nigerian and intercontinental menu.' },
-    { slug: 'bar-lounge', name: 'Bar & Lounge', description: 'Relax with a curated drinks menu in a comfortable lounge.' },
-    { slug: 'hotel', name: 'Hotel', description: 'Comfortable rooms for guests staying in Sapele.' },
-    { slug: 'indoor-catering', name: 'Catering', description: 'Indoor and outdoor catering for any size of event.' },
-    { slug: 'events', name: 'Events', description: 'Weddings, birthdays, corporate functions and more.' },
-    { slug: 'reservations', name: 'Reservations', description: 'Book a table ahead of your visit — no waiting around.' },
-  ];
-  servicesEl.innerHTML = SERVICES.map((s) => `
-    <div class="feature-tile reveal">
-      <div class="icon-wrap">${icon(SERVICE_ICONS[s.slug] || 'info')}</div>
-      <div><h4>${s.name}</h4><p>${s.description}</p></div>
-    </div>`).join('');
-  AromaIcons.hydrateIcons(servicesEl);
+  // --- Services (live from the database — managed at Admin -> Services) ---
+  const SERVICE_ICONS = { restaurant: 'utensils', 'food-ordering': 'cart', 'indoor-catering': 'party', 'outdoor-catering': 'party', catering: 'party', 'bar-lounge': 'wine', hotel: 'bed', events: 'party', meetings: 'orders', parking: 'parking', reservations: 'calendar' };
+  try {
+    const { services } = await window.AromaApi.get('/services');
+    servicesEl.innerHTML = services.length
+      ? services.map((s, i) => `
+        <div class="feature-tile reveal" style="transition-delay:${Math.min(i, 5) * 60}ms;">
+          ${s.image_url
+          ? `<div class="icon-wrap" style="overflow:hidden; padding:0;"><img src="${s.image_url}" alt="" style="width:100%;height:100%;object-fit:cover;" /></div>`
+          : `<div class="icon-wrap">${icon(SERVICE_ICONS[s.slug] || 'info')}</div>`}
+          <div>
+            <h4>${s.name}${s.price ? ` <span class="text-muted" style="font-weight:400; font-size:var(--fs-sm);">— from ${formatNaira(s.price)}</span>` : ''}</h4>
+            <p>${s.description || ''}</p>
+          </div>
+        </div>`).join('')
+      : emptyState({ icon: 'party', title: 'No services available yet', message: 'Services added from the admin dashboard will appear here.' });
+    AromaIcons.hydrateIcons(servicesEl);
+    initScrollReveal?.();
+  } catch (err) {
+    servicesEl.innerHTML = emptyState({ icon: 'alertCircle', title: 'Could not load services', message: friendlyError(err) });
+  }
 
   // --- Reviews ---
   try {
@@ -62,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     const { images } = await window.AromaApi.get('/gallery?featured=true');
     const items = images.length ? images : [];
-    galleryEl.innerHTML = items.slice(0, 4).map(galleryItemHtml).join('') || emptyState({ icon: 'image', title: 'Gallery coming soon', message: '' });
+    galleryEl.innerHTML = items.slice(0, 4).map(galleryItemHtml).join('') || emptyState({ icon: 'image', title: 'No photos yet', message: 'Check back soon for a look inside Aroma FoodLand.' });
     AromaIcons.hydrateIcons(galleryEl);
   } catch {
     galleryEl.innerHTML = '';

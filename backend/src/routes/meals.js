@@ -17,5 +17,6 @@ router.delete('/:id', protect, requireRole('manager'), ctrl.remove);
 
 router.post('/:id/images', protect, requireRole('staff'), upload.array('images', 6), ctrl.uploadImages);
 router.delete('/images/:imageId', protect, requireRole('staff'), ctrl.deleteMealImage);
+router.delete('/:id/images', protect, requireRole('staff'), ctrl.removeAllMealImages);
 
 module.exports = router;

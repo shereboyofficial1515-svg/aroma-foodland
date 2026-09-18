@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('page-desc').setAttribute('content', meal.description || `${meal.name} at Aroma FoodLand, Sapele.`);
 
     const hasDiscount = meal.discount_price && Number(meal.discount_price) < Number(meal.price);
-    const unavailable = !meal.availability;
+    const outOfStock = meal.availability && meal.stock === 0;
+    const unavailable = !meal.availability || outOfStock;
     const images = meal.meal_images?.length ? meal.meal_images.map((i) => i.image_url) : (meal.primary_image_url ? [meal.primary_image_url] : []);
 
     contentEl.innerHTML = `
@@ -30,13 +31,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             : `<div class="img-placeholder"><i data-icon="utensils" data-size="32"></i><span>${meal.name}</span></div>`}
         </div>
         <div>
+          <div class="flex gap-2" style="margin-bottom:8px;">
+            ${meal.is_new ? `<span class="badge badge-success">New</span>` : ''}
+            ${meal.is_recommended ? `<span class="badge badge-neutral">Recommended</span>` : ''}
+            ${meal.is_featured ? `<span class="badge badge-accent">Featured</span>` : ''}
+            ${meal.is_popular ? `<span class="badge badge-accent">Popular</span>` : ''}
+          </div>
           <h1>${meal.name}</h1>
           ${meal.rating_count ? `<div class="flex gap-2" style="margin:8px 0;">${starRow(meal.rating_avg, 16)} <span class="text-muted" style="font-size:var(--fs-sm)">${Number(meal.rating_avg).toFixed(1)} (${meal.rating_count} review${meal.rating_count === 1 ? '' : 's'})</span></div>` : ''}
           <p class="lede">${meal.description || ''}</p>
           <div style="margin:var(--space-4) 0;">
             <span class="price" style="font-size:var(--fs-xl);">${hasDiscount ? `<span class="price-original">${formatNaira(meal.price)}</span>` : ''}${formatNaira(meal.discount_price || meal.price)}</span>
           </div>
-          ${unavailable ? `<div class="badge badge-error" style="margin-bottom:var(--space-4);">Currently unavailable</div>` : ''}
+          ${!meal.availability ? `<div class="badge badge-error" style="margin-bottom:var(--space-4);">Currently unavailable</div>` : outOfStock ? `<div class="badge badge-warning" style="margin-bottom:var(--space-4);">Out of stock</div>` : ''}
 
           <div class="flex gap-3" style="margin-bottom:var(--space-5);">
             <div class="input-group" style="width:120px;">
@@ -60,6 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ${meal.ingredients?.length ? `<dt class="text-muted">Ingredients</dt><dd>${meal.ingredients.join(', ')}</dd>` : ''}
             ${meal.allergens?.length && meal.allergens[0] !== 'None' ? `<dt class="text-muted">Allergens</dt><dd>${meal.allergens.join(', ')}</dd>` : ''}
             ${meal.spice_level ? `<dt class="text-muted">Spice level</dt><dd>${'●'.repeat(meal.spice_level)}${'○'.repeat(3 - meal.spice_level)}</dd>` : ''}
+            ${meal.portion_info ? `<dt class="text-muted">Portion</dt><dd>${meal.portion_info}</dd>` : ''}
           </dl>
         </div>
       </div>`;

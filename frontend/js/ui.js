@@ -128,6 +128,7 @@ function formModal({ title, fieldsHtml, submitLabel = 'Save' }) {
       const data = {};
       form.querySelectorAll('[name]').forEach((el) => {
         if (el.type === 'checkbox') data[el.name] = el.checked;
+        else if (el.type === 'file') data[el.name] = el.files[0] || null;
         else data[el.name] = el.value;
       });
       close(data);
@@ -138,4 +139,36 @@ function formModal({ title, fieldsHtml, submitLabel = 'Save' }) {
   });
 }
 
-window.AromaUI = { toast, confirmModal, formModal, withButtonLoading, skeletonCard, emptyState, friendlyError };
+// Renders an inline notice panel (used for "verify your email",
+// "rate limited", etc.) — more persistent and actionable than a toast,
+// which is right for things the person needs to actually do something about.
+function noticePanelHtml({ type = 'info', title, message, actionId, actionLabel }) {
+  return `
+    <div class="notice-panel notice-${type}">
+      ${title ? `<h4>${title}</h4>` : ''}
+      <p>${message}</p>
+      ${actionId ? `<button type="button" class="btn btn-sm btn-outline" id="${actionId}">${actionLabel}</button>` : ''}
+    </div>`;
+}
+
+// Disables a button and shows a "Resend in Ns" countdown, re-enabling with
+// its original label when it reaches zero. Used after a successful resend
+// so a person can't immediately mash the button into a rate limit.
+function startResendCooldown(button, seconds, label = 'Resend verification email') {
+  const original = button.textContent;
+  let remaining = seconds;
+  button.disabled = true;
+  button.textContent = `Resend in ${remaining}s`;
+  const interval = setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      clearInterval(interval);
+      button.disabled = false;
+      button.textContent = label || original;
+    } else {
+      button.textContent = `Resend in ${remaining}s`;
+    }
+  }, 1000);
+}
+
+window.AromaUI = { toast, confirmModal, formModal, withButtonLoading, skeletonCard, emptyState, friendlyError, noticePanelHtml, startResendCooldown };

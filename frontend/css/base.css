@@ -3,7 +3,7 @@
    ============================================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 body {
@@ -14,6 +14,8 @@ body {
   color: var(--text-primary);
   background: var(--background-color);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 img { max-width: 100%; display: block; }
@@ -56,7 +58,7 @@ p { color: var(--text-secondary); }
 @media (max-width: 960px) { .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 640px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
 
-.flex { display: flex; }
+.flex { display: flex; flex-wrap: wrap; }
 .flex-between { display: flex; align-items: center; justify-content: space-between; }
 .flex-center { display: flex; align-items: center; justify-content: center; }
 .gap-2 { gap: var(--space-2); }
@@ -81,6 +83,8 @@ p { color: var(--text-secondary); }
 }
 .btn:active { transform: scale(0.97); }
 .btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn-primary:hover:not(:disabled), .btn-secondary:hover:not(:disabled) { transform: translateY(-1px); }
+.btn:active:not(:disabled) { transform: translateY(0) scale(0.97); }
 
 .btn-primary { background: var(--primary-color); color: #fff; }
 .btn-primary:hover:not(:disabled) { background: var(--primary-dark); box-shadow: var(--shadow-sm); }
@@ -150,10 +154,39 @@ textarea { resize: vertical; min-height: 6rem; }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
 
+/* --- Card entrance animation: CSS-only (no IntersectionObserver dependency),
+   so cards inserted dynamically after an API call still animate in
+   correctly instead of risking staying invisible. Staggered by position
+   within whatever grid/list they're in. --- */
+@keyframes card-enter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.meal-card, .review-card, .gallery-grid figure, .list-row, .feature-tile {
+  animation: card-enter 0.4s var(--ease-standard) both;
+}
+.grid > :nth-child(1), .gallery-grid > :nth-child(1) { animation-delay: 0ms; }
+.grid > :nth-child(2), .gallery-grid > :nth-child(2) { animation-delay: 40ms; }
+.grid > :nth-child(3), .gallery-grid > :nth-child(3) { animation-delay: 80ms; }
+.grid > :nth-child(4), .gallery-grid > :nth-child(4) { animation-delay: 120ms; }
+.grid > :nth-child(5), .gallery-grid > :nth-child(5) { animation-delay: 160ms; }
+.grid > :nth-child(6), .gallery-grid > :nth-child(6) { animation-delay: 200ms; }
+.grid > :nth-child(n+7), .gallery-grid > :nth-child(n+7) { animation-delay: 220ms; }
+@media (prefers-reduced-motion: reduce) {
+  .meal-card, .review-card, .gallery-grid figure, .list-row, .feature-tile { animation: none; }
+}
+
 /* --- Loading spinner --- */
 .spinner { width: 1.1em; height: 1.1em; border: 2px solid rgba(255,255,255,0.4); border-top-color: currentColor; border-radius: 50%; animation: spin 0.7s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .spinner { animation: spin 1.4s linear infinite; } }
+
+/* --- Inline notice panel (email verification, rate limit, etc.) --- */
+.notice-panel { padding: var(--space-4); border-radius: var(--radius-md); font-size: var(--fs-sm); line-height: var(--lh-snug); }
+.notice-panel h4 { font-size: var(--fs-sm); margin-bottom: 4px; }
+.notice-panel p { margin: 0; color: inherit; }
+.notice-panel.notice-warning { background: #F5E7D6; color: var(--warning-color); }
+.notice-panel.notice-info { background: var(--secondary-tint); color: var(--secondary-color); }
+.notice-panel.notice-error { background: #F6E1DE; color: var(--error-color); }
+.notice-panel.notice-success { background: #E4F0E5; color: var(--success-color); }
+.notice-panel .btn { margin-top: var(--space-3); }
 
 /* --- Empty states --- */
 .empty-state { text-align: center; padding: var(--space-10) var(--space-4); color: var(--text-secondary); }

@@ -14,8 +14,10 @@ const search = asyncHandler(async (req, res) => {
     .ilike('name', `%${q}%`)
     .eq('availability', true)
     .limit(10);
-  if (mealsError) throw new AppError('Search failed. Please try again.', 500, 'SEARCH_FAILED');
-
+  if (mealsError) {
+    console.error('[searchController] database error:', mealsError);
+    throw new AppError('Search failed. Please try again.', 500, 'SEARCH_FAILED');
+  }
   const { data: categories } = await supabaseAdmin
     .from('meal_categories')
     .select('id, name, slug')
@@ -23,7 +25,7 @@ const search = asyncHandler(async (req, res) => {
     .eq('is_active', true)
     .limit(10);
 
-  const { services, faqs } = searchKnowledge(q);
+  const { services, faqs } = await searchKnowledge(q);
 
   res.json({
     success: true,

@@ -22,8 +22,11 @@ const mealSchema = z.object({
   ingredients: z.union([z.array(z.string()), z.string()]).optional(),
   allergens: z.union([z.array(z.string()), z.string()]).optional(),
   spice_level: z.coerce.number().int().min(0).max(3).optional(),
+  portion_info: z.string().trim().max(120).optional().nullable(),
   is_featured: z.coerce.boolean().optional(),
   is_popular: z.coerce.boolean().optional(),
+  is_new: z.coerce.boolean().optional(),
+  is_recommended: z.coerce.boolean().optional(),
 });
 
 const mealQuerySchema = z.object({
@@ -34,6 +37,8 @@ const mealQuerySchema = z.object({
   max_price: z.coerce.number().min(0).optional(),
   featured: z.enum(['true', 'false']).optional(),
   popular: z.enum(['true', 'false']).optional(),
+  new: z.enum(['true', 'false']).optional(),
+  recommended: z.enum(['true', 'false']).optional(),
   sort: z.enum(['price_asc', 'price_desc', 'popular', 'rating', 'newest']).optional(),
   page: z.coerce.number().int().min(1).optional(),
   limit: z.coerce.number().int().min(1).max(50).optional(),

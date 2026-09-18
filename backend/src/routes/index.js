@@ -21,6 +21,7 @@ router.use('/contact', require('./contact'));
 router.use('/reviews', require('./reviews'));
 router.use('/notifications', require('./notifications'));
 router.use('/gallery', require('./gallery'));
+router.use('/services', require('./services'));
 router.use('/search', require('./search'));
 router.use('/ai', require('./ai'));
 router.use('/users', require('./users'));

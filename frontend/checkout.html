@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout — Aroma FoodLand</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
 </head>
+
 <body>
   <a href="#main" class="visually-hidden">Skip to content</a>
   <div id="app-header"></div>
@@ -21,10 +26,14 @@
         <div class="cart-layout">
           <form id="checkout-form" novalidate>
             <h3>Order type</h3>
-            <div class="flex gap-3" style="margin:var(--space-3) 0 var(--space-5);" role="radiogroup" aria-label="Order type">
-              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type" value="delivery" checked style="margin-right:6px;" />Delivery</label>
-              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type" value="pickup" style="margin-right:6px;" />Pickup</label>
-              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type" value="dine_in" style="margin-right:6px;" />Dine-in</label>
+            <div class="flex gap-3" style="margin:var(--space-3) 0 var(--space-5);" role="radiogroup"
+              aria-label="Order type">
+              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type"
+                  value="delivery" checked style="margin-right:6px;" />Delivery</label>
+              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type" value="pickup"
+                  style="margin-right:6px;" />Pickup</label>
+              <label class="category-chip" style="cursor:pointer;"><input type="radio" name="order_type" value="dine_in"
+                  style="margin-right:6px;" />Dine-in</label>
             </div>
 
             <div class="field">
@@ -56,15 +65,18 @@
               <textarea id="special_instructions" maxlength="500"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-order-btn">Continue to Payment</button>
+            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-order-btn">Continue to
+              Payment</button>
           </form>
 
           <aside class="cart-summary">
             <h3>Order Summary</h3>
             <div id="checkout-items" style="margin:var(--space-4) 0; font-size:var(--fs-sm);"></div>
             <hr class="rule" />
-            <div class="flex-between" style="font-size:var(--fs-sm);"><span class="text-muted">Subtotal</span><span id="checkout-subtotal">₦0</span></div>
-            <div class="flex-between" style="font-size:var(--fs-sm); margin-top:4px;"><span class="text-muted">Delivery fee</span><span id="checkout-delivery">₦0</span></div>
+            <div class="flex-between" style="font-size:var(--fs-sm);"><span class="text-muted">Subtotal</span><span
+                id="checkout-subtotal">₦0</span></div>
+            <div class="flex-between" style="font-size:var(--fs-sm); margin-top:4px;"><span class="text-muted">Delivery
+                fee</span><span id="checkout-delivery">₦0</span></div>
             <hr class="rule" />
             <div class="flex-between"><strong>Total</strong><strong id="checkout-total">₦0</strong></div>
           </aside>
@@ -76,6 +88,7 @@
   <div id="app-footer"></div>
 
   <script src="js/config.js"></script>
+  <script src="js/brand.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
@@ -85,4 +98,5 @@
   <script src="js/layout.js"></script>
   <script src="js/pages/checkout.js"></script>
 </body>
+
 </html>

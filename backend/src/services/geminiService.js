@@ -1,7 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const { env } = require('../config/env');
 const { supabaseAdmin } = require('../config/supabase');
-const { searchKnowledge, SERVICES, FAQS } = require('../utils/restaurantKnowledge');
+const { searchKnowledge, getActiveServices, FAQS } = require('../utils/restaurantKnowledge');
 
 const client = env.gemini.enabled ? new GoogleGenerativeAI(env.gemini.apiKey) : null;
 
@@ -67,7 +67,7 @@ async function getSettings() {
   return data;
 }
 
-function buildGroundingBlock({ settings, menu, knowledgeHit }) {
+function buildGroundingBlock({ settings, menu, knowledgeHit, services }) {
   const hours = settings?.opening_hours || {};
   return `
 CURRENT RESTAURANT DATA (use ONLY this for facts — if something the customer asks isn't here, say you don't have that information and offer to connect them with staff):
@@ -83,8 +83,8 @@ Currency: ${settings?.currency || 'NGN'}
 RELEVANT MENU ITEMS RIGHT NOW (JSON):
 ${JSON.stringify(menu, null, 2)}
 
-SERVICES OFFERED:
-${SERVICES.map((s) => `- ${s.name}: ${s.description}`).join('\n')}
+SERVICES OFFERED (current, from the restaurant's own admin dashboard):
+${services.length ? services.map((s) => `- ${s.name}${s.price ? ` (₦${Number(s.price).toLocaleString()})` : ''}: ${s.description || ''}`).join('\n') : 'No services are currently listed.'}
 
 ${knowledgeHit.faqs.length ? `RELEVANT FAQ:\n${knowledgeHit.faqs.map((f) => `Q: ${f.question}\nA: ${f.answer}`).join('\n')}` : ''}
 `.trim();
@@ -112,8 +112,8 @@ async function generateReply({ message, history = [] }) {
     };
   }
 
-  const [menu, knowledgeHit] = await Promise.all([fetchMenuContext(message), Promise.resolve(searchKnowledge(message))]);
-  const grounding = buildGroundingBlock({ settings, menu, knowledgeHit });
+  const [menu, knowledgeHit, services] = await Promise.all([fetchMenuContext(message), searchKnowledge(message), getActiveServices()]);
+  const grounding = buildGroundingBlock({ settings, menu, knowledgeHit, services });
 
   const systemInstruction = `${settings?.ai_system_prompt || DEFAULT_SYSTEM_PROMPT}
 

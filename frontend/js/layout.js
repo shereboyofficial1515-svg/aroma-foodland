@@ -26,20 +26,21 @@ function renderHeader() {
     <header class="site-header">
       <div class="container">
         <a href="index.html" class="brand">
-          <span class="brand-mark">AF</span>
-          Aroma FoodLand
+          ${window.renderBrandMark({ size: 40 })}
+          <span class="brand-text">${window.AROMA_BRAND.name}</span>
         </a>
         <nav class="main-nav" id="main-nav" aria-label="Primary">
           ${NAV_LINKS.map((l) => `<a href="${l.href}" ${l.href === page ? 'aria-current="page"' : ''}>${l.label}</a>`).join('')}
-          <div class="header-actions" data-mobile-only>
-            <a href="login.html" data-auth-slot></a>
-          </div>
+          <hr class="rule mobile-only-link" style="width:100%; margin:var(--space-2) 0;" />
+          <a href="search.html" class="mobile-only-link">${AromaIcons.icon('search', { size: 18 })} Search</a>
+          <a href="notifications.html" class="mobile-only-link" data-require-auth>${AromaIcons.icon('bell', { size: 18 })} Notifications</a>
+          <a href="account.html" class="mobile-only-link" data-auth-slot>${AromaIcons.icon('user', { size: 18 })} <span data-auth-slot-text>Sign in</span></a>
         </nav>
         <div class="header-actions">
-          <button class="icon-btn" aria-label="Search" data-open="search">${AromaIcons.icon('search')}</button>
-          <a class="icon-btn" href="notifications.html" aria-label="Notifications" data-require-auth>${AromaIcons.icon('bell')}</a>
+          <button class="icon-btn" data-desktop-only aria-label="Search" data-open="search">${AromaIcons.icon('search')}</button>
+          <a class="icon-btn" data-desktop-only href="notifications.html" aria-label="Notifications" data-require-auth>${AromaIcons.icon('bell')}</a>
           <a class="icon-btn" href="cart.html" aria-label="Cart">${AromaIcons.icon('cart')}<span class="count-badge" data-cart-count hidden>0</span></a>
-          <a class="icon-btn" href="account.html" aria-label="Account" data-auth-icon>${AromaIcons.icon('user')}</a>
+          <a class="icon-btn" data-desktop-only href="account.html" aria-label="Account" data-auth-icon>${AromaIcons.icon('user')}</a>
           <button class="mobile-nav-toggle icon-btn" aria-label="Menu" aria-expanded="false" data-mobile-toggle>${AromaIcons.icon('menu')}</button>
         </div>
       </div>
@@ -66,7 +67,7 @@ function renderFooter() {
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
-            <div class="brand" style="color:var(--text-on-dark)"><span class="brand-mark">AF</span> Aroma FoodLand</div>
+            <div class="brand" style="color:var(--text-on-dark)">${window.renderBrandMark({ size: 40 })} <span class="brand-text">${window.AROMA_BRAND.name}</span></div>
             <p>Restaurant, bar &amp; lounge, hotel, catering and events in Sapele, Delta State.</p>
             <div class="social-row" style="margin-top:16px;">
               <a href="#" aria-label="Facebook">${AromaIcons.icon('facebook', { size: 16 })}</a>
@@ -117,7 +118,10 @@ function renderFooter() {
 function applyAuthUI(user) {
   document.querySelectorAll('[data-auth-slot]').forEach((el) => {
     el.href = user ? 'account.html' : 'login.html';
-    el.textContent = user ? `Hi, ${user.full_name?.split(' ')[0] || 'there'}` : 'Sign in';
+    const textEl = el.querySelector('[data-auth-slot-text]');
+    const label = user ? `Hi, ${user.full_name?.split(' ')[0] || 'there'}` : 'Sign in';
+    if (textEl) textEl.textContent = label;
+    else el.textContent = label; // fallback for any slot without the inner span
   });
   document.querySelectorAll('[data-auth-icon]').forEach((el) => { el.href = user ? 'account.html' : 'login.html'; });
   document.querySelectorAll('[data-require-auth]').forEach((el) => { el.href = user ? el.href : 'login.html'; });

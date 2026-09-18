@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Account — Aroma FoodLand</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
   <style>
-    .auth-shell { max-width: 440px; margin: var(--space-10) auto; }
-    .auth-divider { display:flex; align-items:center; gap:12px; margin: var(--space-5) 0; color: var(--text-muted); font-size: var(--fs-xs); }
-    .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background: var(--border-color); }
+    .auth-shell {
+      max-width: 440px;
+      margin: var(--space-10) auto;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: var(--space-5) 0;
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
   </style>
 </head>
+
 <body>
   <div id="app-header"></div>
   <main id="main">
     <section class="section">
       <div class="container auth-shell">
         <h1 class="text-center">Create your account</h1>
-        <p class="text-center lede" style="margin:8px auto var(--space-6);">Order food, save addresses, and track your history.</p>
+        <p class="text-center lede" style="margin:8px auto var(--space-6);">Order food, save addresses, and track your
+          history.</p>
 
         <button class="btn btn-outline btn-block" id="google-btn" type="button">Continue with Google</button>
         <div class="auth-divider">or sign up with email</div>
@@ -65,6 +89,7 @@
   <div id="app-footer"></div>
 
   <script src="js/config.js"></script>
+  <script src="js/brand.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
@@ -74,4 +99,5 @@
   <script src="js/layout.js"></script>
   <script src="js/pages/register.js"></script>
 </body>
+
 </html>

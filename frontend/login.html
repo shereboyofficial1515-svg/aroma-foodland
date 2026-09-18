@@ -1,30 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In — Aroma FoodLand</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="css/tokens.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/components.css" />
   <style>
-    .auth-shell { max-width: 420px; margin: var(--space-10) auto; }
-    .auth-divider { display:flex; align-items:center; gap:12px; margin: var(--space-5) 0; color: var(--text-muted); font-size: var(--fs-xs); }
-    .auth-divider::before, .auth-divider::after { content:''; flex:1; height:1px; background: var(--border-color); }
+    .auth-shell {
+      max-width: 420px;
+      margin: var(--space-10) auto;
+    }
+
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: var(--space-5) 0;
+      color: var(--text-muted);
+      font-size: var(--fs-xs);
+    }
+
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
   </style>
 </head>
+
 <body>
   <div id="app-header"></div>
   <main id="main">
     <section class="section">
       <div class="container auth-shell">
         <h1 class="text-center">Welcome back</h1>
-        <p class="text-center lede" style="margin:8px auto var(--space-6);">Sign in to order, reserve a table, and track your history.</p>
+        <p class="text-center lede" style="margin:8px auto var(--space-6);">Sign in to order, reserve a table, and track
+          your history.</p>
 
         <button class="btn btn-outline btn-block" id="google-btn" type="button">Continue with Google</button>
         <div class="auth-divider">or sign in with email</div>
+
+        <div id="login-notice" style="display:none; margin-bottom:var(--space-4);"></div>
 
         <form id="login-form" novalidate>
           <div class="field">
@@ -36,18 +62,21 @@
             <label for="password">Password</label>
             <div class="input-group">
               <input type="password" id="password" required style="border:none;" />
-              <button type="button" class="btn btn-ghost btn-icon" id="toggle-password" aria-label="Show password"><i data-icon="eye" data-size="18"></i></button>
+              <button type="button" class="btn btn-ghost btn-icon" id="toggle-password" aria-label="Show password"><i
+                  data-icon="eye" data-size="18"></i></button>
             </div>
             <span class="error-text">Enter your password.</span>
           </div>
           <div class="flex-between" style="margin-bottom:var(--space-5);">
-            <a href="forgot-password.html" style="font-size:var(--fs-sm); color:var(--primary-color);">Forgot password?</a>
+            <a href="forgot-password.html" style="font-size:var(--fs-sm); color:var(--primary-color);">Forgot
+              password?</a>
           </div>
           <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-submit">Sign In</button>
         </form>
 
         <p class="text-center" style="margin-top:var(--space-6); font-size:var(--fs-sm);">
-          Don't have an account? <a href="register.html" style="color:var(--primary-color); font-weight:600;">Create one</a>
+          Don't have an account? <a href="register.html" style="color:var(--primary-color); font-weight:600;">Create
+            one</a>
         </p>
       </div>
     </section>
@@ -55,6 +84,7 @@
   <div id="app-footer"></div>
 
   <script src="js/config.js"></script>
+  <script src="js/brand.js"></script>
   <script src="js/icons.js"></script>
   <script src="js/api.js"></script>
   <script src="js/ui.js"></script>
@@ -64,4 +94,5 @@
   <script src="js/layout.js"></script>
   <script src="js/pages/login.js"></script>
 </body>
+
 </html>

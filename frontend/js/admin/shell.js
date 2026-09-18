@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   guardMsg.hidden = true;
   appEl.hidden = false;
   AromaIcons.hydrateIcons(appEl);
+  document.getElementById('admin-brand').innerHTML = `${window.renderBrandMark({ size: 40 })} Admin`;
   document.getElementById('admin-user-label').textContent = `${user.full_name} · ${user.role.replace('_', ' ')}`;
 
   const nav = document.getElementById('admin-nav');
@@ -31,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     dashboard: 'Dashboard', orders: 'Orders', meals: 'Meals', categories: 'Categories',
     customers: 'Customers', reservations: 'Reservations', bookings: 'Catering & Hotel Bookings',
     reviews: 'Reviews', gallery: 'Gallery', promotions: 'Promotions', ai: 'AI Assistant',
-    settings: 'Settings', audit: 'Audit Logs', messages: 'Contact Messages',
+    settings: 'Settings', audit: 'Audit Logs', messages: 'Contact Messages', services: 'Services',
   };
 
   // Some sections are gated further by role (e.g. only managers can delete

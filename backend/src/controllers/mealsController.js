@@ -42,6 +42,8 @@ const list = asyncHandler(async (req, res) => {
   if (max_price !== undefined) query = query.lte('price', max_price);
   if (featured !== undefined) query = query.eq('is_featured', featured === 'true');
   if (popular !== undefined) query = query.eq('is_popular', popular === 'true');
+  if (req.query.new !== undefined) query = query.eq('is_new', req.query.new === 'true');
+  if (req.query.recommended !== undefined) query = query.eq('is_recommended', req.query.recommended === 'true');
 
   const sortMap = {
     price_asc: { column: 'price', ascending: true },
@@ -159,15 +161,29 @@ const remove = asyncHandler(async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
-// POST /api/v1/meals/:id/images  (staff+) — upload one or more images
+// POST /api/v1/meals/:id/images  (staff+) — upload one or more images.
+// ?replace=true first removes every existing image for this meal (DB row +
+// Storage object) so the new upload becomes the sole/primary photo — used by
+// the admin "replace food image" flow so old files never go orphaned.
 // ---------------------------------------------------------------------------
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
+  const replace = req.query.replace === 'true';
   const files = req.files || [];
   if (!files.length) throw new AppError('No images uploaded.', 400, 'NO_FILE');
 
   const { data: meal } = await supabaseAdmin.from('meals').select('id, primary_image_url').eq('id', id).single();
   if (!meal) throw new AppError('Meal not found.', 404, 'NOT_FOUND');
+
+  if (replace) {
+    const { data: existing } = await supabaseAdmin.from('meal_images').select('*').eq('meal_id', id);
+    for (const image of existing || []) {
+      const path = image.image_url.split('/meal-images/')[1];
+      // eslint-disable-next-line no-await-in-loop
+      if (path) await deleteImage('meal-images', path);
+    }
+    await supabaseAdmin.from('meal_images').delete().eq('meal_id', id);
+  }
 
   const uploaded = [];
   for (const file of files) {
@@ -180,11 +196,11 @@ const uploadImages = asyncHandler(async (req, res) => {
   const { data: images, error } = await supabaseAdmin.from('meal_images').insert(rows).select();
   if (error) throw new AppError('Images uploaded but could not be linked to the meal.', 500, 'LINK_FAILED');
 
-  if (!meal.primary_image_url) {
+  if (replace || !meal.primary_image_url) {
     await supabaseAdmin.from('meals').update({ primary_image_url: uploaded[0] }).eq('id', id);
   }
 
-  await recordAudit({ userId: req.user.id, action: 'meal_images_uploaded', resourceType: 'meal', resourceId: id, metadata: { count: uploaded.length }, ip: req.ip });
+  await recordAudit({ userId: req.user.id, action: 'meal_images_uploaded', resourceType: 'meal', resourceId: id, metadata: { count: uploaded.length, replace }, ip: req.ip });
   res.status(201).json({ success: true, images });
 });
 
@@ -200,4 +216,25 @@ const deleteMealImage = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'Image removed.' });
 });
 
-module.exports = { list, getBySlug, create, update, remove, uploadImages, deleteMealImage };
+// ---------------------------------------------------------------------------
+// DELETE /api/v1/meals/:id/images  (staff+) — remove every image from a meal
+// (used by the admin "remove photo" action, leaving the meal with no photo
+// rather than a broken reference).
+// ---------------------------------------------------------------------------
+const removeAllMealImages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { data: images } = await supabaseAdmin.from('meal_images').select('*').eq('meal_id', id);
+
+  for (const image of images || []) {
+    const path = image.image_url.split('/meal-images/')[1];
+    // eslint-disable-next-line no-await-in-loop
+    if (path) await deleteImage('meal-images', path);
+  }
+  await supabaseAdmin.from('meal_images').delete().eq('meal_id', id);
+  await supabaseAdmin.from('meals').update({ primary_image_url: null }).eq('id', id);
+
+  await recordAudit({ userId: req.user.id, action: 'meal_images_removed', resourceType: 'meal', resourceId: id, ip: req.ip });
+  res.json({ success: true, message: 'Photo removed.' });
+});
+
+module.exports = { list, getBySlug, create, update, remove, uploadImages, deleteMealImage, removeAllMealImages };

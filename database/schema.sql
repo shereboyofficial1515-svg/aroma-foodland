@@ -103,8 +103,11 @@ create table meals (
   ingredients text[],
   allergens text[],
   spice_level smallint default 0 check (spice_level between 0 and 3),
+  portion_info text,
   is_featured boolean not null default false,
   is_popular boolean not null default false,
+  is_new boolean not null default false,
+  is_recommended boolean not null default false,
   rating_avg numeric(3,2) not null default 0,
   rating_count int not null default 0,
   created_by uuid references profiles(id),
@@ -116,6 +119,8 @@ create index idx_meals_category on meals(category_id);
 create index idx_meals_availability on meals(availability);
 create index idx_meals_featured on meals(is_featured) where is_featured = true;
 create index idx_meals_popular on meals(is_popular) where is_popular = true;
+create index idx_meals_new on meals(is_new) where is_new = true;
+create index idx_meals_recommended on meals(is_recommended) where is_recommended = true;
 create index idx_meals_name_search on meals using gin (to_tsvector('english', name || ' ' || coalesce(description, '')));
 
 create table meal_images (

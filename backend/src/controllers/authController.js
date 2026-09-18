@@ -4,6 +4,17 @@ const { setSessionCookies, clearSessionCookies } = require('../utils/cookies');
 const { recordAudit } = require('../services/auditService');
 const { env } = require('../config/env');
 
+// Supabase Auth errors are meant for developers, not customers — this maps
+// the handful of cases we actually need to tell the customer apart (rate
+// limited vs. unverified vs. everything else) onto our own error codes, so
+// the frontend can show the right message/action instead of a generic one.
+function isRateLimited(error) {
+  return error?.status === 429 || /rate limit/i.test(error?.message || '') || error?.code === 'over_email_send_rate_limit';
+}
+function isEmailNotConfirmed(error) {
+  return error?.code === 'email_not_confirmed' || /email not confirmed/i.test(error?.message || '');
+}
+
 // ---------------------------------------------------------------------------
 // POST /api/v1/auth/register
 // ---------------------------------------------------------------------------
@@ -22,6 +33,9 @@ const register = asyncHandler(async (req, res) => {
   });
 
   if (error) {
+    if (isRateLimited(error)) {
+      throw new AppError("We've sent too many verification emails recently. Please wait a while before trying again.", 429, 'EMAIL_RATE_LIMITED');
+    }
     const status = error.status === 422 ? 409 : 400;
     throw new AppError(
       error.message.includes('already registered') || status === 409
@@ -80,7 +94,13 @@ const login = asyncHandler(async (req, res) => {
   const { data, error } = await supabaseAnon.auth.signInWithPassword({ email, password });
 
   if (error || !data.session) {
-    // Deliberately generic — never reveal whether the email exists.
+    if (isRateLimited(error)) {
+      throw new AppError("Too many attempts recently. Please wait a while before trying again.", 429, 'EMAIL_RATE_LIMITED');
+    }
+    if (isEmailNotConfirmed(error)) {
+      throw new AppError("Your email address hasn't been verified yet. Please check your inbox and click the verification link before signing in.", 403, 'EMAIL_NOT_VERIFIED');
+    }
+    // Deliberately generic beyond this point — never reveal whether the email exists.
     throw new AppError('Incorrect email or password.', 401, 'INVALID_CREDENTIALS');
   }
 
@@ -211,6 +231,24 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/v1/auth/resend-verification
+// ---------------------------------------------------------------------------
+const resendVerification = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const { error } = await supabaseAnon.auth.resend({ type: 'signup', email });
+
+  if (error && isRateLimited(error)) {
+    throw new AppError('Verification email limit reached. Please wait a while before requesting another email.', 429, 'EMAIL_RATE_LIMITED');
+  }
+
+  // Same privacy pattern as forgotPassword: respond identically whether the
+  // email exists, is already verified, or genuinely just got resent — never
+  // let this endpoint be used to check which emails have accounts.
+  res.json({ success: true, message: "If that email needs verification, we've sent a new link." });
+});
+
+// ---------------------------------------------------------------------------
 // POST /api/v1/auth/reset-password  (access_token comes from the emailed link)
 // ---------------------------------------------------------------------------
 const resetPassword = asyncHandler(async (req, res) => {
@@ -265,6 +303,7 @@ module.exports = {
   refresh,
   googleAuthUrl,
   syncSession,
+  resendVerification,
   forgotPassword,
   resetPassword,
   changePassword,

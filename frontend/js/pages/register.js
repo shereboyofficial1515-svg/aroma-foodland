@@ -45,18 +45,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         if (result.requiresEmailVerification) {
+          const email = document.getElementById('email').value.trim();
           document.querySelector('.auth-shell').innerHTML = `
             <div class="text-center">
-              <h1>Check your email</h1>
-              <p class="lede" style="margin:12px auto;">We've sent a verification link to your email address. Click it to activate your account, then sign in.</p>
-              <a href="login.html" class="btn btn-primary" style="margin-top:16px;">Go to sign in</a>
+              <h1>Account created successfully!</h1>
+              <p class="lede" style="margin:12px auto;">We've sent a verification link to your email address. Please check your inbox or spam folder and verify your email before signing in.</p>
+              <button type="button" class="btn btn-outline" id="resend-verification-btn" style="margin-top:16px;">Resend verification email</button>
+              <a href="login.html" class="btn btn-primary" style="display:block; width:fit-content; margin:12px auto 0;">Go to sign in</a>
             </div>`;
+          document.getElementById('resend-verification-btn').addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            btn.disabled = true;
+            try {
+              await window.AromaApi.post('/auth/resend-verification', { email });
+              toast('Verification email sent — check your inbox.', 'success');
+              window.AromaUI.startResendCooldown(btn, 60);
+            } catch (err) {
+              btn.disabled = false;
+              if (err.code === 'EMAIL_RATE_LIMITED') {
+                toast(err.message, 'error');
+              } else {
+                toast(friendlyError(err), 'error');
+              }
+            }
+          });
         } else {
           toast('Account created!', 'success');
           window.location.href = 'account.html';
         }
       } catch (err) {
-        toast(friendlyError(err), 'error');
+        if (err.code === 'EMAIL_RATE_LIMITED') {
+          toast(err.message, 'error');
+        } else {
+          toast(friendlyError(err), 'error');
+        }
       }
     });
     run();

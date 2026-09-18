@@ -24,6 +24,7 @@ router.post('/session', authLimiter, validate(sessionSyncSchema), ctrl.syncSessi
 
 router.post('/forgot-password', authLimiter, validate(forgotPasswordSchema), ctrl.forgotPassword);
 router.post('/reset-password', authLimiter, validate(resetPasswordSchema), ctrl.resetPassword);
+router.post('/resend-verification', authLimiter, validate(forgotPasswordSchema), ctrl.resendVerification);
 router.post('/change-password', protect, validate(changePasswordSchema), ctrl.changePassword);
 
 router.get('/me', protect, ctrl.getMe);

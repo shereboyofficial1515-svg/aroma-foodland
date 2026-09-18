@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aroma-api",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "backend", "run", "dev"],
+      "port": 5000
+    },
+    {
+      "name": "aroma-frontend",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "frontend", "-l", "5500"],
+      "port": 5500
+    }
+  ]
+}
