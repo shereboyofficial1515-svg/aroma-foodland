@@ -2,7 +2,7 @@
 // Every network call to the backend goes through `api.request()` so error
 // handling, credentials, and auth-refresh retry logic live in ONE place.
 
-const API_BASE = window.AROMA_CONFIG?.apiBaseUrl || 'https://aroma-foodland.onrender.com/api/v1';
+const API_BASE = window.AROMA_CONFIG?.apiBaseUrl || 'http://localhost:5000/api/v1';
 
 class ApiError extends Error {
   constructor(message, status, code) {
