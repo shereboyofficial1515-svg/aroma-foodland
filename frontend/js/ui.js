@@ -2,6 +2,27 @@
 // loading states. Reusable functions rather than a framework, per the
 // "vanilla JS but still modular/reusable" requirement.
 
+// Locks page scroll behind an open modal, without the usual layout jump
+// (pads back in whatever width the vertical scrollbar was taking up).
+// Reference-counted since confirmModal/formModal are independent callers —
+// only the last close actually unlocks.
+let modalLockCount = 0;
+function lockBodyScroll() {
+  if (modalLockCount === 0) {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    if (scrollbarWidth > 0) document.body.style.paddingRight = `${scrollbarWidth}px`;
+    document.body.style.overflow = 'hidden';
+  }
+  modalLockCount += 1;
+}
+function unlockBodyScroll() {
+  modalLockCount = Math.max(0, modalLockCount - 1);
+  if (modalLockCount === 0) {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+  }
+}
+
 function ensureToastRegion() {
   let region = document.getElementById('toast-region');
   if (!region) {
@@ -37,21 +58,27 @@ function confirmModal({ title = 'Are you sure?', message = '', confirmLabel = 'C
     backdrop.className = 'modal-backdrop';
     backdrop.innerHTML = `
       <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
-        <h3 id="confirm-title">${title}</h3>
-        <p style="margin-top:8px;">${message}</p>
-        <div class="modal-actions">
+        <div class="modal-header"><h3 id="confirm-title">${title}</h3></div>
+        <div class="modal-body"><p>${message}</p></div>
+        <div class="modal-footer modal-actions">
           <button class="btn btn-outline" data-action="cancel">${cancelLabel}</button>
           <button class="btn ${danger ? 'btn-danger' : 'btn-primary'}" data-action="confirm">${confirmLabel}</button>
         </div>
       </div>`;
     document.body.appendChild(backdrop);
     requestAnimationFrame(() => backdrop.classList.add('is-open'));
+    lockBodyScroll();
 
     function close(result) {
       backdrop.classList.remove('is-open');
+      document.removeEventListener('keydown', onKeydown);
+      unlockBodyScroll();
       setTimeout(() => backdrop.remove(), 200);
       resolve(result);
     }
+
+    function onKeydown(e) { if (e.key === 'Escape') close(false); }
+    document.addEventListener('keydown', onKeydown);
 
     backdrop.querySelector('[data-action="confirm"]').addEventListener('click', () => close(true));
     backdrop.querySelector('[data-action="cancel"]').addEventListener('click', () => close(false));
@@ -104,9 +131,10 @@ function formModal({ title, fieldsHtml, submitLabel = 'Save' }) {
     backdrop.className = 'modal-backdrop';
     backdrop.innerHTML = `
       <div class="modal" style="max-width:520px;" role="dialog" aria-modal="true" aria-labelledby="form-modal-title">
-        <h3 id="form-modal-title">${title}</h3>
-        <form id="form-modal-form" style="margin-top:16px;">${fieldsHtml}
-          <div class="modal-actions">
+        <div class="modal-header"><h3 id="form-modal-title">${title}</h3></div>
+        <form id="form-modal-form" class="modal-form">
+          <div class="modal-body">${fieldsHtml}</div>
+          <div class="modal-footer modal-actions">
             <button type="button" class="btn btn-outline" data-action="cancel">Cancel</button>
             <button type="submit" class="btn btn-primary">${submitLabel}</button>
           </div>
@@ -115,12 +143,18 @@ function formModal({ title, fieldsHtml, submitLabel = 'Save' }) {
     document.body.appendChild(backdrop);
     requestAnimationFrame(() => backdrop.classList.add('is-open'));
     if (window.AromaIcons) window.AromaIcons.hydrateIcons(backdrop);
+    lockBodyScroll();
 
     function close(result) {
       backdrop.classList.remove('is-open');
+      document.removeEventListener('keydown', onKeydown);
+      unlockBodyScroll();
       setTimeout(() => backdrop.remove(), 200);
       resolve(result);
     }
+
+    function onKeydown(e) { if (e.key === 'Escape') close(null); }
+    document.addEventListener('keydown', onKeydown);
 
     const form = backdrop.querySelector('#form-modal-form');
     form.addEventListener('submit', (e) => {

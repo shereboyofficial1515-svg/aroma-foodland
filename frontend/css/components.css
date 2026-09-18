@@ -165,12 +165,29 @@ body.nav-open { overflow: hidden; }
 .social-row a { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(246,241,232,0.25); display: flex; align-items: center; justify-content: center; }
 @media (max-width: 860px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* --- Modal / confirmation dialog --- */
+/* --- Modal / confirmation dialog ---
+   Fixed-height header/footer with a scrollable body between them, so a
+   form taller than the viewport (e.g. the admin "Add Meal" form) never
+   pushes its own action buttons off-screen — only .modal-body scrolls.
+   min-height: 0 on the flex children is required: a flex item's default
+   min-height is auto (= its content size), which silently defeats
+   overflow-y: auto on tall content unless it's reset to 0 here. */
 .modal-backdrop { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(34, 26, 20, 0.5); display: flex; align-items: center; justify-content: center; padding: var(--space-4); z-index: var(--z-overlay); opacity: 0; pointer-events: none; transition: opacity var(--duration-base) var(--ease-standard); }
 .modal-backdrop.is-open { opacity: 1; pointer-events: auto; }
-.modal { background: var(--surface-color); border-radius: var(--radius-lg); padding: var(--space-6); max-width: 420px; width: 100%; box-shadow: var(--shadow-lg); transform: scale(0.96); transition: transform var(--duration-base) var(--ease-standard); }
-.modal-backdrop.is-open .modal { transform: scale(1); }
-.modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-6); }
+.modal {
+  background: var(--surface-color); border-radius: var(--radius-lg);
+  max-width: 420px; width: 100%; box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column; overflow: hidden;
+  max-height: calc(100vh - 2 * var(--space-4));
+  max-height: calc(100dvh - 2 * var(--space-4));
+  transform: scale(0.96) translateY(8px); transition: transform var(--duration-base) var(--ease-standard);
+}
+.modal-backdrop.is-open .modal { transform: scale(1) translateY(0); }
+.modal-header { flex-shrink: 0; padding: var(--space-6) var(--space-6) 0; }
+.modal-form { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-4) var(--space-6); }
+.modal-footer { flex-shrink: 0; padding: 0 var(--space-6) var(--space-6); }
+.modal-actions { display: flex; justify-content: flex-end; gap: var(--space-3); }
 
 /* --- AI chat widget --- */
 .ai-launcher { position: fixed; bottom: var(--space-5); right: var(--space-5); z-index: var(--z-floating); width: 56px; height: 56px; border-radius: 50%; background: var(--primary-color); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-lg); border: none; }
